@@ -54,7 +54,7 @@ class TasksFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         viewDataBinding = TasksFragBinding.inflate(inflater, container, false).apply {
             viewmodel = viewModel
         }
@@ -83,9 +83,8 @@ class TasksFragment : Fragment() {
         inflater.inflate(R.menu.tasks_fragment_menu, menu)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         // Set the lifecycle owner to the lifecycle of the view
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
         setupSnackbar()
@@ -93,13 +92,14 @@ class TasksFragment : Fragment() {
         setupRefreshLayout(viewDataBinding.refreshLayout, viewDataBinding.tasksList)
         setupNavigation()
         setupFab()
+
     }
 
     private fun setupNavigation() {
-        viewModel.openTaskEvent.observe(this, EventObserver {
+        viewModel.openTaskEvent.observe(viewLifecycleOwner, EventObserver {
             openTaskDetails(it)
         })
-        viewModel.newTaskEvent.observe(this, EventObserver {
+        viewModel.newTaskEvent.observe(viewLifecycleOwner, EventObserver {
             navigateToAddNewTask()
         })
     }
@@ -131,10 +131,11 @@ class TasksFragment : Fragment() {
     }
 
     private fun setupFab() {
-        activity?.findViewById<FloatingActionButton>(R.id.add_task_fab)?.let {
-            it.setOnClickListener {
-                navigateToAddNewTask()
-            }
+        Timber.d("setUpFab() called")
+        viewDataBinding.addTaskFab.setOnClickListener {
+            Timber.d("clickListener called")
+            navigateToAddNewTask()
+
         }
     }
 
@@ -144,6 +145,7 @@ class TasksFragment : Fragment() {
                 null,
                 resources.getString(R.string.add_task)
             )
+        Timber.d("about to navigate to AddNewTask")
         findNavController().navigate(action)
     }
 

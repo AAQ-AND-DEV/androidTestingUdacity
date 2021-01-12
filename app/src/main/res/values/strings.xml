@@ -17,6 +17,7 @@
 <resources>
     <string name="app_name">Todo</string>
     <string name="add_task">New Task</string>
+    <string name="add_task_button">Add New Task Button</string>
     <string name="edit_task">Edit Task</string>
     <string name="task_marked_complete">Task marked complete</string>
     <string name="task_marked_active">Task marked active</string>
