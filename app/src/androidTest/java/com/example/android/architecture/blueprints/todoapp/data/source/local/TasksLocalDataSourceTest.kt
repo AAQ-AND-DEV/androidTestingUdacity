@@ -11,6 +11,7 @@ import com.example.android.architecture.blueprints.todoapp.data.succeeded
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -64,5 +65,24 @@ class TasksLocalDataSourceTest {
         assertThat(result.data.title, `is`("title"))
         assertThat(result.data.description, `is`("description"))
         assertThat(result.data.isCompleted, `is`(false))
+    }
+
+    @Test
+    fun completeTask_retrievedTaskIsComplete()=  runBlocking{
+        // 1. Save a new active task in the local data source.
+        val task = Task("task1", "desc1", isCompleted = false)
+        localDataSource.saveTask(task)
+        // 2. Mark it as complete.
+        //meant to be testing localDataSource
+        //database.taskDao().updateCompleted(task.id, true)
+        localDataSource.completeTask(task)
+        // 3. Check that the task can be retrieved from the local data source and is complete.
+        val result = localDataSource.getTask(task.id)
+        assertThat(result.succeeded, `is`(true))
+        result as Success
+        assertThat(result.data.title, `is`("task1"))
+        assertThat(result.data.description, `is`("desc1"))
+        assertThat(result.data.isCompleted, `is`(true))
+
     }
 }
